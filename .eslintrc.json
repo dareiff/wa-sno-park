@@ -3,5 +3,6 @@
         "next/core-web-vitals",
         "eslint:recommended",
         "plugin:react/recommended"
-    ]
+    ],
+    "ignorePatterns": ["**/__tests__/**", "**/*.test.ts", "**/*.test.tsx", "vitest.config.ts", "vitest.setup.ts"]
 }
