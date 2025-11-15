@@ -12,8 +12,7 @@ interface CardBodyI {
     snoparkRegion: SnoParkRegionI;
 }
 
-// eslint-disable-next-line no-undef
-export function CardBody(props: CardBodyI): JSX.Element {
+export function CardBody(props: CardBodyI): React.JSX.Element {
     return (
         <div className={styles.card}>
             <div className={styles.cardHeader}>

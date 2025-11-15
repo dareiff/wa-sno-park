@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import styles from '../styles/Home.module.css';
 import { CardBody } from '../components/cardBody';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 import snoparks from './snoparks.json';
 
@@ -53,9 +54,10 @@ export default function Home() {
             <Head>
                 <title>Washington State Sno-Parks Quick Reference</title>
                 <meta
-                    title='description'
+                    name='description'
                     content='A one-stop spot of sno-parks in washington. The aim is to provide very quick links, traffic, weather, and filtering.'
                 />
+                <meta name='viewport' content='width=device-width, initial-scale=1' />
             </Head>
 
             <main className={styles.main}>
@@ -69,12 +71,20 @@ export default function Home() {
                     <h3>
                         Region Filter{' '}
                         <span
-                            style={{
+style={{
                                 fontSize: '12px',
                                 marginLeft: '1rem',
                                 cursor: 'pointer',
                             }}
                             onClick={() => setParkFilter('')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    setParkFilter('');
+                                }
+                            }}
+                            role='button'
+                            tabIndex={0}
+                            aria-label='Clear region filter'
                         >
                             Clear filter
                         </span>
@@ -84,7 +94,7 @@ export default function Home() {
                             return (
                                 <button
                                     key={snoparkRegion.snoParkRegion}
-                                    id={snoparkRegion.snoParkRegion}
+id={snoparkRegion.snoParkRegion}
                                     name={snoparkRegion.snoParkRegion}
                                     value={snoparkRegion.snoParkRegion}
                                     className={
@@ -101,6 +111,9 @@ export default function Home() {
                                             snoparkRegion.snoParkRegion
                                         );
                                     }}
+                                    aria-pressed={parkFilter.includes(
+                                        snoparkRegion.snoParkRegion
+                                    )}
                                 >
                                     {snoparkRegion.snoParkRegion}
                                 </button>
@@ -118,15 +131,19 @@ export default function Home() {
                         }
                     >
                         <div className={styles.legendIcon}>
-                            <button
+<button
                                 className={styles.fakeButton}
                                 onClick={() =>
                                     buttonFilter !== 'dog'
                                         ? setButtonFilter('dog')
                                         : setButtonFilter('')
                                 }
+                                aria-pressed={buttonFilter === 'dog'}
+                                aria-label='Filter dog friendly parks'
                             >
-                                <span title='Dog friendly'>🐕‍🦺</span>
+                                <span title='Dog friendly' aria-hidden='true'>
+                                    🐕‍🦺
+                                </span>
                             </button>
                         </div>
                         <div className={styles.legendText}>Dogs OK</div>
@@ -189,16 +206,19 @@ export default function Home() {
                                             })
                                             .map((snopark: SnoParkI) => {
                                                 return (
-                                                    <CardBody
+                                                    <ErrorBoundary
                                                         key={
                                                             snopark.snoParkName
                                                         }
-                                                        location={location}
-                                                        snopark={snopark}
-                                                        snoparkRegion={
-                                                            snoparkRegion
-                                                        }
-                                                    />
+                                                    >
+                                                        <CardBody
+                                                            location={location}
+                                                            snopark={snopark}
+                                                            snoparkRegion={
+                                                                snoparkRegion
+                                                            }
+                                                        />
+                                                    </ErrorBoundary>
                                                 );
                                             })}
                                     </div>

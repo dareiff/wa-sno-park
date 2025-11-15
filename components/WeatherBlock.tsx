@@ -81,6 +81,8 @@ export default function WeatherBlock(props: WeatherBlockI) {
         React.useState<null | CurrentWeatherI>(null);
     const [forecastWeather, setForecastWeather] =
         React.useState<null | CurrentWeatherI>(null);
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
+    const [error, setError] = React.useState<string | null>(null);
 
     const [latLong, setLatLong] = React.useState<{ lat: string; lon: string }>({
         lat: propLat,
@@ -103,65 +105,90 @@ export default function WeatherBlock(props: WeatherBlockI) {
 
     React.useEffect(() => {
         if (latLong.lat === '') {
+            setIsLoading(false);
             return;
         }
-        fetch(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${latLong.lat}&lon=${latLong.lon}&units=imperial&appid=${apiKeyTwo}`
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.main) {
+
+        const fetchWeatherData = async () => {
+            try {
+                setIsLoading(true);
+                setError(null);
+
+                const [currentResponse, forecastResponse] = await Promise.all([
+                    fetch(
+                        `https://api.openweathermap.org/data/2.5/weather?lat=${latLong.lat}&lon=${latLong.lon}&units=imperial&appid=${apiKeyTwo}`
+                    ),
+                    fetch(
+                        `https://api.openweathermap.org/data/2.5/forecast?lat=${latLong.lat}&lon=${latLong.lon}&units=imperial&appid=${apiKeyTwo}`
+                    ),
+                ]);
+
+                if (!currentResponse.ok || !forecastResponse.ok) {
+                    throw new Error('Failed to fetch weather data');
+                }
+
+                const currentData = await currentResponse.json();
+                const forecastData = await forecastResponse.json();
+
+                if (currentData.main) {
                     setCurrentWeather({
-                        temp: data.main.temp.toFixed(0),
-                        icon: data.weather[0].icon,
+                        temp: currentData.main.temp.toFixed(0),
+                        icon: currentData.weather[0].icon,
                     });
-                } else {
-                    // console.log('No weather data');
                 }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
 
-        fetch(
-            `https://api.openweathermap.org/data/2.5/forecast?lat=${latLong.lat}&lon=${latLong.lon}&units=imperial&appid=${apiKeyTwo}`
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                let snow = false;
-                let snowAmount = 0;
+                if (forecastData.list && forecastData.list.length > 2) {
+                    let snow = false;
+                    let snowAmount = 0;
 
-                for (let i = 0; i < 2; i++) {
-                    if (data.list === undefined) {
-                        // console.log('No weather data', props.location);
-                        return;
+                    for (let i = 0; i < 2; i++) {
+                        if ('snow' in forecastData.list[i]) {
+                            snow = true;
+                            snowAmount += forecastData.list[i].snow['3h'];
+                        }
                     }
-                    // TODO: data.list might be undefined
-                    if ('snow' in data.list[i]) {
-                        snow = true;
-                        snowAmount += data.list[i].snow['3h'];
-                        // console.log(
-                        //     'SNOW amount:',
-                        //     data.list[i].snow['3h'] + ' inches',
-                        //     snowAmount
-                        // );
-                    }
+
+                    setForecastWeather({
+                        temp: forecastData.list[2].main.temp.toFixed(0),
+                        icon: forecastData.list[2].weather[0].icon,
+                        snowInSixHours: snow,
+                        snowAmount: snowAmount,
+                    });
                 }
-                setForecastWeather({
-                    temp: data.list[2].main.temp.toFixed(0),
-                    icon: data.list[2].weather[0].icon,
-                    snowInSixHours: snow,
-                    snowAmount: snowAmount,
-                });
-                // console.log(snowAmount);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+
+                setIsLoading(false);
+            } catch (err) {
+                console.error('Weather fetch error:', err);
+                setError(
+                    err instanceof Error
+                        ? err.message
+                        : 'Failed to load weather'
+                );
+                setIsLoading(false);
+            }
+        };
+
+        fetchWeatherData();
     }, [props.location, latLong, apiKeyTwo]);
 
-    if (currentWeather === null) {
-        return null;
+    if (error) {
+        return (
+            <div className={styles.weather}>
+                <h3>Weather</h3>
+                <p style={{ color: '#ff6b6b', fontSize: '14px' }}>
+                    Unable to load weather data
+                </p>
+            </div>
+        );
+    }
+
+    if (isLoading || currentWeather === null) {
+        return (
+            <div className={styles.weather}>
+                <h3>Weather</h3>
+                <p>Loading weather data...</p>
+            </div>
+        );
     }
 
     return (
