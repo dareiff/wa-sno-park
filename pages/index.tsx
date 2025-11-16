@@ -39,9 +39,9 @@ export default function Home() {
 
     const [buttonFilter, setButtonFilter] = React.useState<string>('');
     const [parkFilter, setParkFilter] = React.useState<string>('');
-    const [searchQuery, setSearchQuery] = React.useState<string>('');
     const [sortBy, setSortBy] = React.useState<string>('region');
     const [favorites, setFavorites] = React.useState<string[]>([]);
+    const [showFavoritesOnly, setShowFavoritesOnly] = React.useState<boolean>(false);
 
     // Load favorites from localStorage on mount
     React.useEffect(() => {
@@ -114,14 +114,10 @@ export default function Home() {
             <main className={styles.main}>
                 <h1 className={styles.title}>sno-park.site</h1>
 
-                {/* Season Status Badge */}
-                {isInSeason() ? (
+                {/* Season Status Badge - Only show when IN season */}
+                {isInSeason() && (
                     <div className={styles.seasonBadge}>
                         ❄️ <strong>IN SEASON</strong> - Dec 1 to Mar 31
-                    </div>
-                ) : (
-                    <div className={styles.seasonBadgeOff}>
-                        ☀️ <strong>OFF SEASON</strong> - Season runs Dec 1 to Mar 31
                     </div>
                 )}
 
@@ -149,20 +145,32 @@ export default function Home() {
                         <div className={styles.statNumber}>{stats.groomedCount}</div>
                         <div className={styles.statLabel}>Groomed</div>
                     </div>
+                    {favorites.length > 0 && (
+                        <div
+                            className={`${styles.statCard} ${styles.statCardFavorites}`}
+                            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    setShowFavoritesOnly(!showFavoritesOnly);
+                                }
+                            }}
+                            aria-pressed={showFavoritesOnly}
+                            style={{ cursor: 'pointer' }}
+                        >
+                            <div className={styles.statNumber}>
+                                {showFavoritesOnly ? '★' : '☆'} {favorites.length}
+                            </div>
+                            <div className={styles.statLabel}>
+                                {showFavoritesOnly ? 'Showing Favorites' : 'Your Favorites'}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                {/* Search and Sort Controls */}
+                {/* Sort Control */}
                 <div className={styles.controlsContainer}>
-                    <div className={styles.searchContainer}>
-                        <input
-                            type='text'
-                            placeholder='🔍 Search sno-parks...'
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className={styles.searchInput}
-                            aria-label='Search sno-parks by name'
-                        />
-                    </div>
                     <div className={styles.sortContainer}>
                         <label htmlFor='sort-select'>Sort by:</label>
                         <select
@@ -293,8 +301,8 @@ id={snoparkRegion.snoParkRegion}
                                     if (buttonFilter === 'dog' && !snopark.dogFriendly) {
                                         return false;
                                     }
-                                    // Search filter
-                                    if (searchQuery && !snopark.snoParkName.toLowerCase().includes(searchQuery.toLowerCase())) {
+                                    // Favorites-only filter
+                                    if (showFavoritesOnly && !favorites.includes(snopark.snoParkName)) {
                                         return false;
                                     }
                                     return true;
