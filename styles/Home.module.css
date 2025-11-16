@@ -586,3 +586,203 @@
     border-radius: 6px;
     margin-bottom: 1rem;
 }
+
+/* Season Status Badge */
+.seasonBadge {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: white;
+    padding: 0.875rem 1.5rem;
+    border-radius: 16px;
+    font-size: 1rem;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    margin: 1rem auto;
+    max-width: 400px;
+    animation: slideDown 0.5s ease;
+}
+
+.seasonBadgeOff {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+    color: var(--text-dark);
+    padding: 0.875rem 1.5rem;
+    border-radius: 16px;
+    font-size: 1rem;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    margin: 1rem auto;
+    max-width: 450px;
+    animation: slideDown 0.5s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Quick Stats Dashboard */
+.statsContainer {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    width: 100%;
+}
+
+.statCard {
+    background: white;
+    border: 2px solid var(--border-light);
+    border-radius: 16px;
+    padding: 1.5rem 1.25rem;
+    min-width: 140px;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.statCard:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-blue);
+}
+
+.statNumber {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.statLabel {
+    font-size: 0.875rem;
+    color: var(--text-gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Search and Sort Controls */
+.controlsContainer {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+    width: 100%;
+}
+
+.searchContainer {
+    flex: 1;
+    min-width: 250px;
+    max-width: 400px;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--border-light);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: var(--shadow-md);
+}
+
+.searchInput::placeholder {
+    color: var(--text-gray);
+}
+
+.sortContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sortContainer label {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.9375rem;
+}
+
+.sortSelect {
+    padding: 0.875rem 1.25rem;
+    border: 2px solid var(--border-light);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.sortSelect:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: var(--shadow-md);
+}
+
+.sortSelect:hover {
+    border-color: var(--primary-blue);
+}
+
+/* Favorite Button */
+.favoriteButton {
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    transition: all 0.2s ease;
+    color: var(--accent-orange);
+    line-height: 1;
+}
+
+.favoriteButton:hover {
+    transform: scale(1.2);
+}
+
+.favoriteButton:active {
+    transform: scale(0.95);
+}
+
+@media (max-width: 600px) {
+    .controlsContainer {
+        flex-direction: column;
+    }
+
+    .searchContainer {
+        max-width: 100%;
+    }
+
+    .statsContainer {
+        gap: 0.75rem;
+    }
+
+    .statCard {
+        min-width: 120px;
+        padding: 1.25rem 1rem;
+    }
+
+    .statNumber {
+        font-size: 2rem;
+    }
+}
