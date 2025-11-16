@@ -146,7 +146,7 @@
                 "dogFriendlyInfo": "",
                 "amountOfKM": 0,
                 "permitRequired": true,
-                "restrooms": true
+                "restrooms": false
             },
             {
                 "snoParkName": "Kachess",
@@ -212,8 +212,8 @@
                 "groomingSchedule": true,
                 "shortGroomingSummary": "Groomed every Monday and Friday.",
                 "groomingReportURL": "",
-                "dogFriendly": false,
-                "dogFriendlyInfo": "",
+                "dogFriendly": true,
+                "dogFriendlyInfo": "Pet-friendly trails with 4 miles of groomed dog-friendly trails",
                 "amountOfKM": 6,
                 "permitRequired": true,
                 "restrooms": true
@@ -224,7 +224,7 @@
                 "officialSnoParkURL": "https://www.snowrec.org/blewett-pass",
                 "distanceFromSeattle": 2,
                 "groomingSchedule": false,
-                "shortGroomingSummary": "Ungroomed skiing",
+                "shortGroomingSummary": "Ungroomed XC skiing - 70 miles groomed for snowmobiles",
                 "groomingReportURL": "",
                 "dogFriendly": false,
                 "dogFriendlyInfo": "",
@@ -377,13 +377,13 @@
             {
                 "snoParkName": "Mount Spokane",
                 "snoParkAddress": "",
-                "shortGroomingSummary": "Numerous trails are groomed on a rotating schedule.",
+                "shortGroomingSummary": "Groomed 5 days/week excluding Mon & Tues.",
                 "officialSnoParkURL": "https://www.parks.wa.gov/615/Inland-Northeast-Southeast",
                 "parkingGPS": "48.25386467634129, -117.1212651289843",
                 "distanceFromSeattle": 5.25,
                 "groomingSchedule": true,
                 "dogFriendly": true,
-                "dogFriendlyInfo": "Dogs must be on a harness and attached to a human at all times.",
+                "dogFriendlyInfo": "Dogs allowed for SKIJORING ONLY. Must be on harness attached to human skier at all times.",
                 "groomingReportURL": "https://nordic-pulse.com/ski-areas/US/WA/Mount-Spokane",
                 "amountOfKM": 50,
                 "permitRequired": true,
