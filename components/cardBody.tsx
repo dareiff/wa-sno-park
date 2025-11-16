@@ -10,6 +10,9 @@ interface CardBodyI {
     // eslint-disable-next-line no-undef
     location: GeolocationPosition['coords'] | null;
     snoparkRegion: SnoParkRegionI;
+    isFavorite?: boolean;
+    // eslint-disable-next-line no-unused-vars
+    onToggleFavorite?: (parkName: string) => void;
 }
 
 export function CardBody(props: CardBodyI): React.JSX.Element {
@@ -25,9 +28,21 @@ export function CardBody(props: CardBodyI): React.JSX.Element {
                 >
                     <h3>{props.snopark.snoParkName}</h3>
                 </Link>
-                <span className={styles.drivetime}>
-                    {props.snopark.distanceFromSeattle} hr drive (typical)
-                </span>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <span className={styles.drivetime}>
+                        {props.snopark.distanceFromSeattle} hr drive (typical)
+                    </span>
+                    {props.onToggleFavorite && (
+                        <button
+                            className={styles.favoriteButton}
+                            onClick={() => props.onToggleFavorite!(props.snopark.snoParkName)}
+                            aria-label={props.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                            title={props.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                        >
+                            {props.isFavorite ? '★' : '☆'}
+                        </button>
+                    )}
+                </div>
             </div>
             <div className={styles.cardBody}>
                 {/* amount of KM of trails */}
