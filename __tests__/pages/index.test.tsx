@@ -89,15 +89,21 @@ describe('Home Page', () => {
         expect(leavenworthButton).toHaveAttribute('aria-pressed', 'true');
     });
 
-    it('filters sno-parks by dog-friendly when icon is clicked', () => {
+    it('filters sno-parks by dog-friendly when stat card is clicked', () => {
         render(<Home />);
 
-        const dogButton = screen.getByRole('button', {
-            name: 'Filter dog friendly parks',
-        });
-        fireEvent.click(dogButton);
+        // Find the dog-friendly stat card by its text content
+        const statCards = screen.getAllByRole('button');
+        const dogStatCard = statCards.find(card =>
+            card.textContent?.includes('Dog-Friendly')
+        );
 
-        expect(dogButton).toHaveAttribute('aria-pressed', 'true');
+        expect(dogStatCard).toBeDefined();
+        expect(dogStatCard).toHaveAttribute('aria-pressed', 'false');
+
+        fireEvent.click(dogStatCard!);
+
+        expect(dogStatCard).toHaveAttribute('aria-pressed', 'true');
     });
 
     it('clears region filter when clear button is clicked', () => {
@@ -131,15 +137,30 @@ describe('Home Page', () => {
         expect(lakeWenatcheeElements.length).toBeGreaterThan(0);
     });
 
-    it('renders the legend', () => {
+    it('renders the stats dashboard with clickable filters', () => {
         render(<Home />);
 
-        // "Legend" appears in multiple places (page legend and each card)
-        const legendElements = screen.getAllByText('Legend');
-        expect(legendElements.length).toBeGreaterThan(0);
+        // Check that the stats dashboard is rendered
+        expect(screen.getByText('Total Parks')).toBeInTheDocument();
+        expect(screen.getByText('KM of Trails')).toBeInTheDocument();
+        expect(screen.getByText('Dog-Friendly')).toBeInTheDocument();
+        expect(screen.getByText('Groomed')).toBeInTheDocument();
+    });
 
-        expect(screen.getByText('Dogs OK')).toBeInTheDocument();
-        expect(screen.getByText('Sno-park permit')).toBeInTheDocument();
-        expect(screen.getByText('Toilet')).toBeInTheDocument();
+    it('filters sno-parks by groomed when stat card is clicked', () => {
+        render(<Home />);
+
+        // Find the groomed stat card by its text content
+        const statCards = screen.getAllByRole('button');
+        const groomedStatCard = statCards.find(card =>
+            card.textContent?.includes('Groomed')
+        );
+
+        expect(groomedStatCard).toBeDefined();
+        expect(groomedStatCard).toHaveAttribute('aria-pressed', 'false');
+
+        fireEvent.click(groomedStatCard!);
+
+        expect(groomedStatCard).toHaveAttribute('aria-pressed', 'true');
     });
 });

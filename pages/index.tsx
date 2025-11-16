@@ -37,11 +37,12 @@ export default function Home() {
         null | GeolocationPosition['coords']
     >(null);
 
-    const [buttonFilter, setButtonFilter] = React.useState<string>('');
     const [parkFilter, setParkFilter] = React.useState<string>('');
     const [sortBy, setSortBy] = React.useState<string>('region');
     const [favorites, setFavorites] = React.useState<string[]>([]);
     const [showFavoritesOnly, setShowFavoritesOnly] = React.useState<boolean>(false);
+    const [showDogFriendlyOnly, setShowDogFriendlyOnly] = React.useState<boolean>(false);
+    const [showGroomedOnly, setShowGroomedOnly] = React.useState<boolean>(false);
 
     // Load favorites from localStorage on mount
     React.useEffect(() => {
@@ -137,13 +138,45 @@ export default function Home() {
                         <div className={styles.statNumber}>{stats.totalKm}</div>
                         <div className={styles.statLabel}>KM of Trails</div>
                     </div>
-                    <div className={styles.statCard}>
-                        <div className={styles.statNumber}>{stats.dogFriendlyCount}</div>
-                        <div className={styles.statLabel}>Dog-Friendly</div>
+                    <div
+                        className={`${styles.statCard} ${styles.statCardClickable} ${showDogFriendlyOnly ? styles.statCardActive : ''}`}
+                        onClick={() => setShowDogFriendlyOnly(!showDogFriendlyOnly)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setShowDogFriendlyOnly(!showDogFriendlyOnly);
+                            }
+                        }}
+                        aria-pressed={showDogFriendlyOnly}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <div className={styles.statNumber}>
+                            🐕‍🦺 {stats.dogFriendlyCount}
+                        </div>
+                        <div className={styles.statLabel}>
+                            {showDogFriendlyOnly ? 'Showing Dog-Friendly' : 'Dog-Friendly'}
+                        </div>
                     </div>
-                    <div className={styles.statCard}>
-                        <div className={styles.statNumber}>{stats.groomedCount}</div>
-                        <div className={styles.statLabel}>Groomed</div>
+                    <div
+                        className={`${styles.statCard} ${styles.statCardClickable} ${showGroomedOnly ? styles.statCardActive : ''}`}
+                        onClick={() => setShowGroomedOnly(!showGroomedOnly)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setShowGroomedOnly(!showGroomedOnly);
+                            }
+                        }}
+                        aria-pressed={showGroomedOnly}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <div className={styles.statNumber}>
+                            ⛷️ {stats.groomedCount}
+                        </div>
+                        <div className={styles.statLabel}>
+                            {showGroomedOnly ? 'Showing Groomed' : 'Groomed'}
+                        </div>
                     </div>
                     {favorites.length > 0 && (
                         <div
@@ -242,46 +275,6 @@ id={snoparkRegion.snoParkRegion}
                         })}
                     </div>
                 </div>
-                <h3>Legend</h3>
-                <div className={styles.legend}>
-                    <div
-                        className={
-                            buttonFilter === 'dog'
-                                ? styles.legendItemActive
-                                : styles.legendItem
-                        }
-                    >
-                        <div className={styles.legendIcon}>
-<button
-                                className={styles.fakeButton}
-                                onClick={() =>
-                                    buttonFilter !== 'dog'
-                                        ? setButtonFilter('dog')
-                                        : setButtonFilter('')
-                                }
-                                aria-pressed={buttonFilter === 'dog'}
-                                aria-label='Filter dog friendly parks'
-                            >
-                                <span title='Dog friendly' aria-hidden='true'>
-                                    🐕‍🦺
-                                </span>
-                            </button>
-                        </div>
-                        <div className={styles.legendText}>Dogs OK</div>
-                    </div>
-                    <div className={styles.legendItem}>
-                        <div className={styles.legendIcon}>
-                            <span title='Sno park permit required'>🪪</span>
-                        </div>
-                        <div className={styles.legendText}>Sno-park permit</div>
-                    </div>
-                    <div className={styles.legendItem}>
-                        <div className={styles.legendIcon}>
-                            <span title='Toilets available'>🚽</span>
-                        </div>
-                        <div className={styles.legendText}>Toilet</div>
-                    </div>
-                </div>
                 <div className={styles.verticalList}>
                     {snoparks
                         .filter((snoparkRegion) => {
@@ -298,7 +291,11 @@ id={snoparkRegion.snoParkRegion}
                             let filteredParks = snoparkRegion.snoParks
                                 .filter((snopark: SnoParkI) => {
                                     // Dog filter
-                                    if (buttonFilter === 'dog' && !snopark.dogFriendly) {
+                                    if (showDogFriendlyOnly && !snopark.dogFriendly) {
+                                        return false;
+                                    }
+                                    // Groomed filter
+                                    if (showGroomedOnly && !snopark.groomingSchedule) {
                                         return false;
                                     }
                                     // Favorites-only filter

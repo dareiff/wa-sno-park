@@ -671,6 +671,42 @@
     letter-spacing: 0.05em;
 }
 
+/* Clickable Stat Cards */
+.statCardClickable {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.statCardClickable:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-blue);
+}
+
+.statCardClickable:active {
+    transform: scale(0.98);
+}
+
+.statCardActive {
+    background: linear-gradient(
+        135deg,
+        rgba(8, 145, 178, 0.15),
+        rgba(14, 116, 144, 0.15)
+    );
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 20px rgba(8, 145, 178, 0.3);
+    transform: translateY(-3px);
+}
+
+.statCardActive .statNumber {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: heartbeat 0.5s ease;
+}
+
 /* Favorites Stat Card */
 .statCardFavorites {
     cursor: pointer;
